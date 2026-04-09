@@ -1,0 +1,85 @@
+Starting sign up process for: srk3264@utexas.edu
+code_components_preview_iframe-1f2144f4d81fada2.min.js.br:90 Sign up response: {ok: true, status: 200, data: {…}}
+code_components_preview_iframe-1f2144f4d81fada2.min.js.br:90 Session token received from signup endpoint!
+code_components_preview_iframe-1f2144f4d81fada2.min.js.br:90 Token stored in localStorage after signup: Yes
+code_components_preview_iframe-1f2144f4d81fada2.min.js.br:90 Successfully signed up and signed in!
+code_components_preview_iframe-1f2144f4d81fada2.min.js.br:90  GET https://uwilklhmywnxulpujfwr.supabase.co/functions/v1/make-server-c028dd1d/auth/user 401 (Unauthorized)
+(anonymous) @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:90
+fetchUser @ AuthContext.tsx:41
+(anonymous) @ AuthContext.tsx:33
+TN @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+T8 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+T7 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+T6 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+T4 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+S1 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+SQ @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+(anonymous) @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+(anonymous) @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:65
+V @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:61
+B @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:61
+eo @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:61Understand this error
+uwilklhmywnxulpujfwr.supabase.co/functions/v1/make-server-c028dd1d/auth/user:1  Failed to load resource: the server responded with a status of 401 ()Understand this error
+uwilklhmywnxulpujfwr.supabase.co/functions/v1/make-server-c028dd1d/auth/user:1  Failed to load resource: the server responded with a status of 401 ()Understand this error
+(index):1 Access to fetch at 'https://fonts.googleapis.com/css2?family=Museo+Moderno:wght@700&display=swap' from origin 'https://9050fd9d-9806-4fe9-a962-8a7ea8042529-v2-figmaiframepreview.figma.site' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.Understand this error
+(index):1 Access to fetch at 'https://fonts.googleapis.com/css2?family=Museo+Moderno:wght@700&display=swap' from origin 'https://9050fd9d-9806-4fe9-a962-8a7ea8042529-v2-figmaiframepreview.figma.site' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.Understand this error
+(index):1 Access to fetch at 'https://fonts.googleapis.com/css2?family=Museo+Moderno:wght@700&display=swap' from origin 'https://9050fd9d-9806-4fe9-a962-8a7ea8042529-v2-figmaiframepreview.figma.site' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.Understand this error
+code_components_preview_iframe-1f2144f4d81fada2.min.js.br:90  GET https://fonts.googleapis.com/css2?family=Museo+Moderno:wght@700&display=swap net::ERR_FAILED 400 (Bad Request)
+(anonymous) @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:90
+n @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:135
+(anonymous) @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:135
+i @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:135
+await in i
+v @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:135
+I @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:135
+await in I
+b @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:135
+await in b
+B @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:117
+(anonymous) @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:117
+TN @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+T8 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+T7 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+T6 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+T4 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+S1 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+SQ @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+(anonymous) @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+(anonymous) @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:65
+V @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:61
+B @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:61
+eo @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:61Understand this error
+fonts.googleapis.com/css2?family=Museo+Moderno:wght@700&display=swap:1  Failed to load resource: net::ERR_FAILEDUnderstand this error
+fonts.googleapis.com/css2?family=Museo+Moderno:wght@700&display=swap:1  Failed to load resource: net::ERR_FAILEDUnderstand this error
+(index):1 Access to fetch at 'https://fonts.googleapis.com/css2?family=Museo+Moderno:wght@700&display=swap' from origin 'https://9050fd9d-9806-4fe9-a962-8a7ea8042529-v2-figmaiframepreview.figma.site' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.Understand this error
+(index):1 Access to fetch at 'https://fonts.googleapis.com/css2?family=Museo+Moderno:wght@700&display=swap' from origin 'https://9050fd9d-9806-4fe9-a962-8a7ea8042529-v2-figmaiframepreview.figma.site' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.Understand this error
+code_components_preview_iframe-1f2144f4d81fada2.min.js.br:90  GET https://fonts.googleapis.com/css2?family=Museo+Moderno:wght@700&display=swap net::ERR_FAILED 400 (Bad Request)
+(anonymous) @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:90
+n @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:135
+(anonymous) @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:135
+i @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:135
+await in i
+v @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:135
+I @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:135
+await in I
+b @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:135
+await in b
+B @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:117
+(anonymous) @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:117
+TN @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+T8 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+T7 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+T6 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+T4 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+S1 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+SQ @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+(anonymous) @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+(anonymous) @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:65
+V @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:61
+B @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:61
+eo @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:61Understand this error
+fonts.googleapis.com/css2?family=Museo+Moderno:wght@700&display=swap:1  Failed to load resource: net::ERR_FAILEDUnderstand this error
+vendor-core-83c17265f2588e9e.min.js.br:54 [MultiplayerSession] connecting to wss://www.figma.com/api/multiplayer/khsWqaOqt1V9uPIRWDVy8L?role=editor&tracking_session_id=0BIE65Lw0mMfA7dx&version=151&recentReload=0&file-load-streaming-compression=&user-id=1420948348258899084&client_release=32ef91ca99d6b35ac0578ba9760ac3ed8662fc95&reconnect-key=e21fe8f4de1a6a69521c9872f5e45fbbb6847bd9&reconnect-sequence-number=534&initialFileVersion=106&previousLoadMode=full&incremental-loading-validation=0
+vendor-core-83c17265f2588e9e.min.js.br:54 [MultiplayerSession] Joining file version 106 (skip_reload reconnect)
+/make/khsWqaOqt1V9uPIRWDVy8L/Fini-AI?p=f&t=6f3nERXmkAx3Ml47-0&preview-route=%2Fdashboard:1 Access to image at 'https://www.gravatar.com/avatar/6799a6e43f651f602b293d021f2d11c6?size=240&default=https%3A%2F%2Fs3-alpha.figma.com%2Fstatic%2Fuser_s_v2.png?c=1' from origin 'https://www.figma.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.Understand this error
+www.gravatar.com/avatar/6799a6e43f651f602b293d021f2d11c6?size=240&default=https%3A%2F%2Fs3-alpha.figma.com%2Fstatic%2Fuser_s_v2.png?c=1:1  GET https://www.gravatar.com/avatar/6799a6e43f651f602b293d021f2d11c6?size=240&default=https%3A%2F%2Fs3-alpha.figma.com%2Fstatic%2Fuser_s_v2.png?c=1 net::ERR_FAILED 302 (Found)

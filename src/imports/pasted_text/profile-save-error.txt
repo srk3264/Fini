@@ -1,0 +1,82 @@
+=== BIRTHDAY STEP: STARTING PROFILE SAVE ===
+code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:90 Birthday value: 2002-10-18
+code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:90 Access token from localStorage: Found (eyJhbGciOiJFUzI1NiIsImtpZCI6Im...)
+code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:90 📦 Profile data to save: {
+  "nickname": "sanju",
+  "aiPersona": "Balanced",
+  "gender": "Male",
+  "faiths": [],
+  "occupation": "",
+  "relationshipStatus": "",
+  "birthday": "2002-10-18",
+  "notificationTimes": []
+}
+code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:90 🚀 Making API call to save profile...
+code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:90 Saving profile with data: {nickname: 'sanju', aiPersona: 'Balanced', gender: 'Male', faiths: Array(0), occupation: '', …}
+code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:90 Using access token: Present
+index.js?Expires=1775433600&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=FlKk8on~ZEHc9~wjipdgrx7-g18Bf3eFtmKjHSQkv1eBloqRXTV-BPsvCXa51MhQ~02eRKY3H1sPlxQNcHYUFEQhJsCx2YmxKUq5C7OpQb4D1-W~3~w1Cg-KCD5AGuFOvv3ewYforRMTXec0AFWpgwat44DrQZDIc9X11ytXR~pPsWciRCe8x0NziD1P7uL8Dgk7JuRb9wA4XmY~5PfqnV8PRLvFez4-lMbDF2N1qqOP0yVYp2cuDk2OGXhMdhFK3I13soaD7aHZ0PStOaUDWhqypVhmqiPTZ3SRlvE-HmHsXPyjLKV7H5T2Sig1WajZK-hRCIxpvg-HzJgjQg0XCA__:10273  POST https://uwilklhmywnxulpujfwr.supabase.co/functions/v1/make-server-c028dd1d/profile 401 (Unauthorized)
+cv @ index.js?Expires=1775433600&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=FlKk8on~ZEHc9~wjipdgrx7-g18Bf3eFtmKjHSQkv1eBloqRXTV-BPsvCXa51MhQ~02eRKY3H1sPlxQNcHYUFEQhJsCx2YmxKUq5C7OpQb4D1-W~3~w1Cg-KCD5AGuFOvv3ewYforRMTXec0AFWpgwat44DrQZDIc9X11ytXR~pPsWciRCe8x0NziD1P7uL8Dgk7JuRb9wA4XmY~5PfqnV8PRLvFez4-lMbDF2N1qqOP0yVYp2cuDk2OGXhMdhFK3I13soaD7aHZ0PStOaUDWhqypVhmqiPTZ3SRlvE-HmHsXPyjLKV7H5T2Sig1WajZK-hRCIxpvg-HzJgjQg0XCA__:10273
+g @ index.js?Expires=1775433600&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=FlKk8on~ZEHc9~wjipdgrx7-g18Bf3eFtmKjHSQkv1eBloqRXTV-BPsvCXa51MhQ~02eRKY3H1sPlxQNcHYUFEQhJsCx2YmxKUq5C7OpQb4D1-W~3~w1Cg-KCD5AGuFOvv3ewYforRMTXec0AFWpgwat44DrQZDIc9X11ytXR~pPsWciRCe8x0NziD1P7uL8Dgk7JuRb9wA4XmY~5PfqnV8PRLvFez4-lMbDF2N1qqOP0yVYp2cuDk2OGXhMdhFK3I13soaD7aHZ0PStOaUDWhqypVhmqiPTZ3SRlvE-HmHsXPyjLKV7H5T2Sig1WajZK-hRCIxpvg-HzJgjQg0XCA__:10810
+y @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+ik @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+iz @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+i$ @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+dP @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+dM @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+dG @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+dk @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+(anonymous) @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+SR @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+iR @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+dj @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+lO @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+lN @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+lv @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25Understand this error
+code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:90 Response status: 401
+code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:90 Response ok: false
+code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:90 Response data: {code: 401, message: 'Invalid JWT'}
+code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:17 Error saving profile: undefined
+r @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:17
+error @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:90
+cv @ index.js?Expires=1775433600&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=FlKk8on~ZEHc9~wjipdgrx7-g18Bf3eFtmKjHSQkv1eBloqRXTV-BPsvCXa51MhQ~02eRKY3H1sPlxQNcHYUFEQhJsCx2YmxKUq5C7OpQb4D1-W~3~w1Cg-KCD5AGuFOvv3ewYforRMTXec0AFWpgwat44DrQZDIc9X11ytXR~pPsWciRCe8x0NziD1P7uL8Dgk7JuRb9wA4XmY~5PfqnV8PRLvFez4-lMbDF2N1qqOP0yVYp2cuDk2OGXhMdhFK3I13soaD7aHZ0PStOaUDWhqypVhmqiPTZ3SRlvE-HmHsXPyjLKV7H5T2Sig1WajZK-hRCIxpvg-HzJgjQg0XCA__:10286
+await in cv
+g @ index.js?Expires=1775433600&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=FlKk8on~ZEHc9~wjipdgrx7-g18Bf3eFtmKjHSQkv1eBloqRXTV-BPsvCXa51MhQ~02eRKY3H1sPlxQNcHYUFEQhJsCx2YmxKUq5C7OpQb4D1-W~3~w1Cg-KCD5AGuFOvv3ewYforRMTXec0AFWpgwat44DrQZDIc9X11ytXR~pPsWciRCe8x0NziD1P7uL8Dgk7JuRb9wA4XmY~5PfqnV8PRLvFez4-lMbDF2N1qqOP0yVYp2cuDk2OGXhMdhFK3I13soaD7aHZ0PStOaUDWhqypVhmqiPTZ3SRlvE-HmHsXPyjLKV7H5T2Sig1WajZK-hRCIxpvg-HzJgjQg0XCA__:10810
+y @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+ik @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+iz @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+i$ @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+dP @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+dM @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+dG @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+dk @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+(anonymous) @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+SR @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+iR @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+dj @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+lO @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+lN @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+lv @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25Understand this error
+code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:90 📥 Save profile result: {
+  "success": false,
+  "error": "Server error: 401"
+}
+code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:17 ❌ Failed to save profile: Server error: 401
+r @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:17
+error @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:90
+g @ index.js?Expires=1775433600&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=FlKk8on~ZEHc9~wjipdgrx7-g18Bf3eFtmKjHSQkv1eBloqRXTV-BPsvCXa51MhQ~02eRKY3H1sPlxQNcHYUFEQhJsCx2YmxKUq5C7OpQb4D1-W~3~w1Cg-KCD5AGuFOvv3ewYforRMTXec0AFWpgwat44DrQZDIc9X11ytXR~pPsWciRCe8x0NziD1P7uL8Dgk7JuRb9wA4XmY~5PfqnV8PRLvFez4-lMbDF2N1qqOP0yVYp2cuDk2OGXhMdhFK3I13soaD7aHZ0PStOaUDWhqypVhmqiPTZ3SRlvE-HmHsXPyjLKV7H5T2Sig1WajZK-hRCIxpvg-HzJgjQg0XCA__:10813
+await in g
+y @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+ik @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+iz @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+i$ @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+dP @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+dM @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+dG @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+dk @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+(anonymous) @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+SR @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+iR @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+dj @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+lO @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+lN @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+lv @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25Understand this error

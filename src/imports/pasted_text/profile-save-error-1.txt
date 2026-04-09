@@ -1,0 +1,97 @@
+GET https://sfo.cloud.appwrite.io/v1/databases/main/collections/profiles/documents/69c1d976d40eae51f05d 404 (Not Found)
+(anonymous) @ appwrite.js?v=2e7a6098:2405
+(anonymous) @ appwrite.js?v=2e7a6098:1792
+__awaiter @ appwrite.js?v=2e7a6098:1774
+call @ appwrite.js?v=2e7a6098:2402
+getDocument @ appwrite.js?v=2e7a6098:4579
+saveProfile @ profile.ts:34
+await in saveProfile
+handleNext @ PostSignupOnboarding.tsx:688
+y @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+ik @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+iz @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+i$ @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+dP @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+dM @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+dG @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+dk @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+(anonymous) @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+SR @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+iR @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+dj @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+lO @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+lN @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+lv @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25Understand this error
+code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:90 Creating new profile...
+profile.ts:58  POST https://sfo.cloud.appwrite.io/v1/databases/main/collections/profiles/documents 404 (Not Found)
+(anonymous) @ appwrite.js?v=2e7a6098:2405
+(anonymous) @ appwrite.js?v=2e7a6098:1792
+__awaiter @ appwrite.js?v=2e7a6098:1774
+call @ appwrite.js?v=2e7a6098:2402
+createDocument @ appwrite.js?v=2e7a6098:4540
+saveProfile @ profile.ts:58
+await in saveProfile
+handleNext @ PostSignupOnboarding.tsx:688
+y @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+ik @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+iz @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+i$ @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+dP @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+dM @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+dG @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+dk @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+(anonymous) @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+SR @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+iR @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+dj @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+lO @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+lN @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+lv @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25Understand this error
+code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:17 Error saving profile: AppwriteException: Database with the requested ID 'main' could not be found.
+    at _Client.<anonymous> (appwrite.js?v=2e7a6098:2429:15)
+    at Generator.next (<anonymous>)
+    at fulfilled (appwrite.js?v=2e7a6098:1777:24)
+r @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:17
+error @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:90
+saveProfile @ profile.ts:74
+await in saveProfile
+handleNext @ PostSignupOnboarding.tsx:688
+y @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+ik @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+iz @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+i$ @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+dP @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+dM @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+dG @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+dk @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+(anonymous) @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+SR @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+iR @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+dj @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+lO @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+lN @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+lv @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25Understand this error
+code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:90 📥 Save profile result: {
+  "success": false,
+  "error": "Database with the requested ID 'main' could not be found."
+}
+code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:17 ❌ Failed to save profile: Database with the requested ID 'main' could not be found.
+r @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:17
+error @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:90
+handleNext @ PostSignupOnboarding.tsx:694
+await in handleNext
+y @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+ik @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+iz @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+i$ @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+dP @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+dM @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+dG @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+dk @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+(anonymous) @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+SR @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+iR @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+dj @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:37
+lO @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+lN @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25
+lv @ code_components_preview_iframe-4d2efcec2b596a6b.min.js.br:25Understand this error

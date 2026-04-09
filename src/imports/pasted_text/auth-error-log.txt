@@ -1,0 +1,65 @@
+Fetching user with token...
+code_components_preview_iframe-1f2144f4d81fada2.min.js.br:90  GET https://uwilklhmywnxulpujfwr.supabase.co/functions/v1/make-server-c028dd1d/auth/user 401 (Unauthorized)
+(anonymous) @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:90
+fetchUser @ AuthContext.tsx:42
+(anonymous) @ AuthContext.tsx:33
+TN @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+T8 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+T7 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+T6 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+T4 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+S1 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+SQ @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+(anonymous) @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+(anonymous) @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:65
+V @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:61
+B @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:61
+eo @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:61Understand this error
+uwilklhmywnxulpujfwr.supabase.co/functions/v1/make-server-c028dd1d/auth/user:1  Failed to load resource: the server responded with a status of 401 ()Understand this error
+code_components_preview_iframe-1f2144f4d81fada2.min.js.br:90 Fetch user response status: 401
+code_components_preview_iframe-1f2144f4d81fada2.min.js.br:90 Failed to fetch user: {code: 401, message: 'Invalid JWT'}
+(anonymous) @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:90
+r @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:17
+fetchUser @ AuthContext.tsx:56
+await in fetchUser
+(anonymous) @ AuthContext.tsx:33
+TN @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+T8 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+T7 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+T6 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+T4 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+S1 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+SQ @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+(anonymous) @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+(anonymous) @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:65
+V @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:61
+B @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:61
+eo @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:61Understand this error
+(index):1 Access to fetch at 'https://fonts.googleapis.com/css2?family=Museo+Moderno:wght@700&display=swap' from origin 'https://9050fd9d-9806-4fe9-a962-8a7ea8042529-v2-figmaiframepreview.figma.site' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.Understand this error
+(index):1 Access to fetch at 'https://fonts.googleapis.com/css2?family=Museo+Moderno:wght@700&display=swap' from origin 'https://9050fd9d-9806-4fe9-a962-8a7ea8042529-v2-figmaiframepreview.figma.site' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.Understand this error
+code_components_preview_iframe-1f2144f4d81fada2.min.js.br:90  GET https://fonts.googleapis.com/css2?family=Museo+Moderno:wght@700&display=swap net::ERR_FAILED 400 (Bad Request)
+(anonymous) @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:90
+n @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:135
+(anonymous) @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:135
+i @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:135
+await in i
+v @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:135
+I @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:135
+await in I
+b @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:135
+await in b
+B @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:117
+(anonymous) @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:117
+TN @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+T8 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+T7 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+T6 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+T4 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+S1 @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+SQ @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+(anonymous) @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:37
+(anonymous) @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:65
+V @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:61
+B @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:61
+eo @ code_components_preview_iframe-1f2144f4d81fada2.min.js.br:61Understand this error
+fonts.googleapis.com/css2?family=Museo+Moderno:wght@700&display=swap:1  Failed to load resource: net::ERR_FAILEDUnderstand this error
