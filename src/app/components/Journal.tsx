@@ -14,11 +14,14 @@ import { getProfile } from "../utils/profile"; // add at top if missing
 import mascotListening from "../../assets/Finis.png";
 import mascotProcessing from "../../assets/Finis-1.png";
 import mascotResponse from "../../assets/Finis-2.png";
+import winkSentiment from 'wink-sentiment';
+import { Client, Functions, Account } from "appwrite";
 
 
 interface TextSegment {
   text: string;
   tag?: "reflections" | "health" | "todo" | "reminders";
+  mood?: "positive" | "negative" | "neutral";
 }
 
 interface JournalEntry {
@@ -27,6 +30,57 @@ interface JournalEntry {
   time: string;
   segments: TextSegment[];
 }
+
+function getMood(text: string): "positive" | "negative" | "neutral" {
+  const result = winkSentiment(text);
+  if (result.score > 0) return "positive";
+  if (result.score < 0) return "negative";
+  return "neutral";
+}
+
+// Appwrite proxy for segment tagging
+const client = new Client();
+client
+  .setEndpoint("https://sfo.cloud.appwrite.io/v1") // or your self-hosted endpoint
+  .setProject("69c1cb9a00318d9dea10"); // <-- replace with your Appwrite project ID
+
+const functions = new Functions(client);
+const account = new Account(client);
+
+async function getTag(text: string): Promise<"reflections" | "health" | "todo" | "reminders" | undefined> {
+  const candidateLabels = ["reflections", "health", "todo", "reminders"];
+  try {
+    await account.get(); // throws if not logged in
+    const execution = await functions.createExecution(
+  "69d85ed70025a371e4e5",
+  JSON.stringify({ text, candidate_labels: candidateLabels }),
+  true
+);
+
+// Log the entire execution object for debugging
+console.log("Appwrite execution object:", execution);
+
+let data: any = undefined;
+try { data = execution.stdout ? JSON.parse(execution.stdout) : undefined; } catch {}
+if (!data && (execution as any).response) {
+  try { data = JSON.parse((execution as any).response); } catch {}
+}
+if (!data && (execution as any).output) {
+  try { data = JSON.parse((execution as any).output); } catch {}
+}
+console.log("Raw backend response", data);
+    if (typeof data?.label === "string" && typeof data?.score === "number") {
+      const threshold = 0.5;
+      if (data.score >= threshold) return data.label as "reflections" | "health" | "todo" | "reminders";
+      return undefined;
+    }
+    return undefined;
+  } catch (e) {
+    console.error("Appwrite proxy error", e);
+  }
+  return undefined;
+}
+   
 
 export default function Journal() {
   const navigate = useNavigate();
@@ -153,23 +207,42 @@ console.error("ui.mic:error", err);
   setCurrentEntry("");
 
   try {
-    const segs = text
-      .split(/([.!?])\s+/) // keep sentence enders
-      .reduce<string[]>((acc, cur, i, arr) => {
-        if (i % 2 === 0) {
-          const next = arr[i + 1] || "";
-          const s = (cur + (/[.!?]/.test(next) ? next : "")).trim();
-          if (s) acc.push(s);
-        }
-        return acc;
-      }, [])
-      .map((t) => ({ text: t }));
+    // ...existing code...
+    const segs = await Promise.all(
+  text
+    .split(/([.!?])\s+/)
+    .reduce<string[]>((acc, cur, i, arr) => {
+      if (i % 2 === 0) {
+        const next = arr[i + 1] || "";
+        const s = (cur + (/[.!?]/.test(next) ? next : "")).trim();
+        if (s) acc.push(s);
+      }
+      return acc;
+    }, [])
+    .map(async (t) => {
+  const tag = await getTag(t);
+  console.log("Segment:", t, "Tag:", tag);
+  return tag ? { text: t, tag } : { text: t };
+})
+);
+console.log("Segments to be saved:", segs);
+const allowedMoods = ["very_bad", "bad", "neutral", "good", "very_good"];
+// Map your getMood output to Appwrite's allowed values
+function mapMood(mood: string): string {
+  if (mood === "positive") return "good";
+  if (mood === "negative") return "bad";
+  if (allowedMoods.includes(mood)) return mood;
+  return "neutral";
+}
+const overallMoodRaw = getMood(text);
+const overallMood = mapMood(overallMoodRaw);
 
-  const doc = await createEntry({
-    content: text,
-    segments: JSON.stringify(segs), // store as string (matches journal.ts)
-    localTime: optimistic.time,
-  });
+const doc = await createEntry({
+  content: text,
+  segments: JSON.stringify(segs),
+  localTime: optimistic.time,
+  mood: overallMood,
+});
   setEntries((prev) =>
     prev.map((e) => (e.id === optimistic.id ? { ...optimistic, id: (doc as any).$id } : e))
   );
@@ -265,43 +338,50 @@ console.error("ui.mic:error", err);
   };
 
 // Save recognized speech as a journal entry + optimistic UI
+// Save recognized speech as a journal entry + optimistic UI
 const saveVoiceEntry = async (text: string) => {
-  const t = (text || "").trim();
-  if (!t) return;
+  // Instead of splitting/joining, use the buffer as segments
+  const buffer = voiceBuffer.map((t) => t.trim()).filter(Boolean);
+  if (buffer.length === 0) return;
 
-  const optimistic = {
-    id: `v-${Date.now()}`,
-    time: getCurrentTime(),
-    segments: t
-      .split(/([.!?])\s+/)
-      .reduce<string[]>((acc, cur, i, arr) => {
-        if (i % 2 === 0) {
-          const next = arr[i + 1] || "";
-          const s = (cur + (/[.!?]/.test(next) ? next : "")).trim();
-          if (s) acc.push(s);
-        }
-        return acc;
-      }, [])
-      .map((x) => ({ text: x })),
-  };
+  const segments = await Promise.all(
+  buffer.map(async (t) => ({
+    text: t,
+    tag: await getTag(t),
+  }))
+);
+const content = buffer.join(" ");
+const allowedMoods = ["very_bad", "bad", "neutral", "good", "very_good"];
+function mapMood(mood: string): string {
+  if (mood === "positive") return "good";
+  if (mood === "negative") return "bad";
+  if (allowedMoods.includes(mood)) return mood;
+  return "neutral";
+}
+const overallMood = mapMood(getMood(content));
+const optimistic = {
+  id: `v-${Date.now()}`,
+  time: getCurrentTime(),
+  segments,
+};
+setEntries((prev) => [optimistic, ...prev]);
+setHasEntriesToday(true);
+setIsFirstEverEntry(false);
 
-  setEntries((prev) => [optimistic, ...prev]);
-  setHasEntriesToday(true);
-  setIsFirstEverEntry(false);
-
-  try {
-    const doc = await createEntry({
-      content: t,
-      segments: JSON.stringify(optimistic.segments),
-      localTime: optimistic.time,
-    });
-    setEntries((prev) =>
-      prev.map((e) => (e.id === optimistic.id ? { ...optimistic, id: (doc as any).$id } : e))
-    );
-  } catch (e) {
-    console.warn("ui.save:voice:err", e);
-    setEntries((prev) => prev.filter((e) => e.id !== optimistic.id));
-  }
+try {
+  const doc = await createEntry({
+    content,
+    segments: JSON.stringify(segments),
+    localTime: optimistic.time,
+    mood: overallMood,
+  });
+  setEntries((prev) =>
+    prev.map((e) => (e.id === optimistic.id ? { ...optimistic, id: (doc as any).$id } : e))
+  );
+} catch (e) {
+  console.warn("ui.save:voice:err", e);
+  setEntries((prev) => prev.filter((e) => e.id !== optimistic.id));
+}
 };
 // Fetch a short AI reply based on aiPersona
 // Persona is passed in; model comes only from env

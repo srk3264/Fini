@@ -26,6 +26,7 @@ export async function createEntry(params: {
   content: string;
   segments?: string;
   localTime?: string;
+  mood?: string; 
 }) {
   const user = await account.get();
   const userId = user.$id;
@@ -43,6 +44,9 @@ export async function createEntry(params: {
   }
   if (params.localTime) {
     payload.localTime = params.localTime;
+  }
+  if (params.mood) {
+    payload.mood = params.mood;
   }
 
   try {
