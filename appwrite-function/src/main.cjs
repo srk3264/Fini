@@ -1,101 +1,96 @@
-
-
 module.exports = async ({ req, res, log, error }) => {
-  // Read Hugging Face credentials from environment variables
   const HF_API_KEY = process.env.HF_API_KEY;
-  const HF_TAGGING_MODEL = process.env.HF_TAGGING_MODEL || "facebook/bart-large-mnli";
+  const HF_TAGGING_MODEL =
+    process.env.HF_TAGGING_MODEL || "facebook/bart-large-mnli";
+
+  log("Function started");
 
   if (!HF_API_KEY) {
-    error("Missing HF_API_KEY environment variable");
-    return res.json({ error: "Missing Hugging Face API key" }, 500);
+    return res.json({ error: "Missing HF_API_KEY" }, 500);
   }
 
-  // Parse input
-  let body = req.bodyRaw || req.body || "";
+  let body = req.bodyRaw || req.body || {};
   try {
     if (typeof body === "string") body = JSON.parse(body);
-  } catch (e) {
-    error("Invalid JSON body");
+  } catch {
     return res.json({ error: "Invalid JSON body" }, 400);
   }
 
   const { text, candidate_labels } = body;
+
   if (!text || !candidate_labels) {
-    error("Missing text or candidate_labels");
     return res.json({ error: "Missing text or candidate_labels" }, 400);
   }
 
-  // Call Hugging Face zero-shot classification API
- // Call Hugging Face zero-shot classification API
-try {
   const API_URL = `https://router.huggingface.co/hf-inference/models/${HF_TAGGING_MODEL}`;
 
-  const hfRes = await fetch(API_URL, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${HF_API_KEY}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      inputs: text,
-      parameters: {
-        candidate_labels: candidate_labels
-      }
-    })
-  });
+  try {
+    log("Calling Hugging Face");
 
-  let hfData;
-  const contentType = hfRes.headers.get("content-type") || "";
+    // timeout wrapper
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
 
-  if (contentType.includes("application/json")) {
-    hfData = await hfRes.json();
-  } else {
-    const textResponse = await hfRes.text();
-    error(`Hugging Face non-JSON response: ${textResponse}`);
-    return res.json({ error: `Hugging Face returned non-JSON: ${textResponse}` }, 500);
+    const hfRes = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${HF_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        inputs: text,
+        parameters: { candidate_labels },
+      }),
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeout);
+
+    const contentType = hfRes.headers.get("content-type") || "";
+    let hfData;
+
+    if (contentType.includes("application/json")) {
+      hfData = await hfRes.json();
+    } else {
+      const txt = await hfRes.text();
+      return res.json(
+        { error: "Non-JSON response from HF", detail: txt },
+        500
+      );
+    }
+
+    if (!hfRes.ok) {
+      return res.json(
+        { error: hfData.error || "HF request failed" },
+        hfRes.status
+      );
+    }
+
+    if (hfData.estimated_time) {
+      return res.json({ error: "Model loading, try again" }, 503);
+    }
+
+    let label, score;
+
+    if (Array.isArray(hfData)) {
+      const top = hfData.reduce((a, b) => (b.score > a.score ? b : a));
+      label = top.label;
+      score = top.score;
+    } else if (hfData.labels && hfData.scores) {
+      const maxIdx = hfData.scores.indexOf(Math.max(...hfData.scores));
+      label = hfData.labels[maxIdx];
+      score = hfData.scores[maxIdx];
+    } else {
+      return res.json({ error: "Unexpected HF response" }, 500);
+    }
+
+    return res.json({ label, score });
+  } catch (e) {
+    if (e.name === "AbortError") {
+      return res.json({ error: "Request timed out" }, 504);
+    }
+
+    error(e.message);
+    return res.json({ error: "Server error" }, 500);
   }
-
-  if (!hfRes.ok) {
-    error(`Hugging Face HTTP error ${hfRes.status}: ${JSON.stringify(hfData)}`);
-    return res.json({ error: hfData.error || `HTTP ${hfRes.status}` }, hfRes.status);
-  }
-
-  if (hfData.error) {
-    error("Hugging Face error: " + hfData.error);
-    return res.json({ error: hfData.error }, 500);
-  }
-
-  if (hfData.estimated_time) {
-    error("Hugging Face model is loading: " + JSON.stringify(hfData));
-    return res.json({ error: "Model is loading, please try again in a few seconds." }, 503);
-  }
-
-  // If response is an array of {label, score} objects
-if (Array.isArray(hfData) && hfData.length > 0 && hfData[0].label && hfData[0].score !== undefined) {
-  // Find the label with the highest score
-  const top = hfData.reduce((max, item) => (item.score > max.score ? item : max), hfData[0]);
-  console.log(JSON.stringify({ label: top.label, score: top.score }));
-return;
-}
-
-// The response is usually an object with labels and scores
-if (hfData.labels && hfData.scores) {
-  // Find the label with the highest score
-  let maxIdx = 0;
-  for (let i = 1; i < hfData.scores.length; i++) {
-    if (hfData.scores[i] > hfData.scores[maxIdx]) maxIdx = i;
-  }
-  console.log(JSON.stringify({ label: hfData.labels[maxIdx], score: hfData.scores[maxIdx] }));
-return;
-}
-
-error("Unexpected Hugging Face response: " + JSON.stringify(hfData));
-console.error(JSON.stringify({ error: "Unexpected Hugging Face response format." }));
-process.exit(1);
-
-} catch (e) {
-  error("Failed to call Hugging Face: " + e.message);
-console.error(JSON.stringify({ error: "Failed to call Hugging Face" }));
-process.exit(1);
-}
 };
