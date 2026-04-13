@@ -121,6 +121,7 @@ export default function Journal() {
     x: number;
     y: number;
   } | null>(null);
+  const [showMenuPopup, setShowMenuPopup] = useState(false);
   const [swipedEntryId, setSwipedEntryId] = useState<string | null>(null);
   const [voiceOpen, setVoiceOpen] = useState(false);
 const [voiceState, setVoiceState] = useState<"listening"|"processing"|"response">("listening");
@@ -182,8 +183,8 @@ console.error("ui.mic:error", err);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const editTextareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const aiSummary =
-    "Yesterday was a lil rough, that's okay. We've been through crazier shit before from staying up 2 days for an exam that was eventually canceled & the other time when you farted thinking no one would notice! New day, new start!";
+  const [aiSummary, setAiSummary] = useState<string>("");
+  const [aiSummaryLoading, setAiSummaryLoading] = useState<boolean>(false);
 
   const getCurrentTime = () => {
     const now = new Date();
@@ -211,6 +212,9 @@ console.error("ui.mic:error", err);
     setIsFirstEverEntry(false);
     setHasEntriesToday(true);
   };
+  const handleMenuButtonClick = () => {
+  setShowMenuPopup((v) => !v);
+};
 
   const handleAddEntryFromValue = async (raw: string) => {
   const text = (raw || "").trim();
@@ -512,7 +516,7 @@ return t >= dayStart && t < dayEnd;
 .map(({ createdAt, ...rest }) => rest);
 
 setEntries(ordered);
-setIsFirstEverEntry(ordered.length === 0);
+setIsFirstEverEntry(docs.length === 0);
 setHasEntriesToday(ordered.length > 0);
 
 
@@ -577,6 +581,56 @@ console.warn("journal.list:err", e);
   })();
 }, []);
 
+useEffect(() => {
+  if (!showMenuPopup) return;
+  const handler = (e: MouseEvent) => {
+    setShowMenuPopup(false);
+  };
+  setTimeout(() => {
+    window.addEventListener("click", handler);
+  }, 0);
+  return () => window.removeEventListener("click", handler);
+}, [showMenuPopup]);
+
+useEffect(() => {
+  // Only run if there are no entries for today and not currently typing
+  if (!user || hasEntriesToday || isTyping) return;
+  console.log("Fetching AI summary for yesterday...");
+  setAiSummaryLoading(true);
+  const fetchYesterdaySummary = async () => {
+    try {
+      const now = new Date();
+      const yesterday = new Date(now);
+      yesterday.setDate(now.getDate() - 1);
+      const yDate = yesterday.toISOString().slice(0, 10);
+      // 2. Fetch yesterday's entries
+      const docs = await listMyEntries();
+      const yEntries = docs.filter((d: any) => {
+        const entryDate = new Date(d.$createdAt).toISOString().slice(0, 10);
+        return entryDate === yDate;
+      });
+      if (yEntries.length === 0) {
+        setAiSummary("No entries from yesterday.");
+        setAiSummaryLoading(false);
+        return;
+      }
+      // 3. Concatenate text
+      const text = yEntries.map((d: any) => d.content).join("\n");
+      // 4. Call OpenRouter
+      const summary = await fetchOpenRouterReply(
+        `Summarize these journal entries for me in 2-3 sentences: \n${text}`,
+        aiPersona
+      );
+      setAiSummary(summary || "No summary available.");
+    } catch (e) {
+      setAiSummary("No summary available.");
+    } finally {
+      setAiSummaryLoading(false);
+    }
+  };
+  fetchYesterdaySummary();
+}, [user, aiPersona, hasEntriesToday, isTyping]);
+
 const micDisabled = voiceState === "processing" || (voiceOpen && !voiceReady);
 console.log("ui.mic", { voiceOpen, voiceState, voiceReady, disabled: micDisabled });
 
@@ -598,13 +652,16 @@ console.log("ui.mic", { voiceOpen, voiceState, voiceReady, disabled: micDisabled
           <p className="font-['DM_Sans',sans-serif] font-bold leading-[20px] relative shrink-0 text-[15px] text-black whitespace-nowrap">
             Journal
           </p>
-          <button className="relative shrink-0 size-[16px] cursor-pointer transition-opacity hover:opacity-70 active:opacity-50">
-            <img
-              alt="Menu"
-              className="absolute inset-0 max-w-none object-contain pointer-events-none size-full"
-              src={imgMenuVertical}
-            />
-          </button>
+          <button
+  className="relative shrink-0 size-[16px] cursor-pointer transition-opacity hover:opacity-70 active:opacity-50"
+  onClick={handleMenuButtonClick}
+>
+  <img
+    alt="Menu"
+    className="absolute inset-0 max-w-none object-contain pointer-events-none size-full"
+    src={imgMenuVertical}
+  />
+</button>
         </div>
 
         {/* Date and Privacy Badge */}
@@ -665,6 +722,15 @@ console.log("ui.mic", { voiceOpen, voiceState, voiceReady, disabled: micDisabled
     <p className="font-['DM_Sans',sans-serif] font-normal leading-[16px] relative shrink-0 text-[12px] text-[rgba(0,0,0,0.6)] whitespace-nowrap">
       {getCurrentTime()}
     </p>
+   {(() => {
+      console.log('[JOURNAL PLACEHOLDER DEBUG]', {
+        isFirstEverEntry,
+        entriesLength: entries.length,
+        aiSummary,
+        aiSummaryLoading
+      });
+      return null;
+    })()}
     <textarea
       ref={textareaRef}
       value={currentEntry}
@@ -675,7 +741,13 @@ console.log("ui.mic", { voiceOpen, voiceState, voiceReady, disabled: micDisabled
       if (trimmed) setTimeout(() => handleAddEntryFromValue(val), 0);
       // if empty: do nothing → keep timestamp/input visible
       }}
-      placeholder={!isFirstEverEntry && entries.length === 0 ? aiSummary : "What's on your mind?"}
+      placeholder={
+    !isFirstEverEntry && entries.length === 0
+      ? aiSummaryLoading
+        ? "Loading summary..."
+        : aiSummary
+      : "What's on your mind?"
+  }
       className="flex-[1_0_0] font-['DM_Sans',sans-serif] font-normal leading-[22px] min-h-px min-w-px relative text-[17px] text-[rgba(0,0,0,0.87)] bg-transparent border-none outline-none resize-none placeholder:text-[rgba(0,0,0,0.38)]"
       rows={3}
     />
@@ -818,6 +890,68 @@ console.log("ui.mic", { voiceOpen, voiceState, voiceReady, disabled: micDisabled
           ))}
         </div>
       )}
+
+      {showMenuPopup && (
+  <div
+    style={{
+      position: "absolute",
+      top: 56, // adjust as needed for your button
+      right: 16,
+      zIndex: 50,
+      background: "#fff",
+      borderRadius: 16,
+      boxShadow: "0 4px 24px rgba(0,0,0,0.10)",
+      width: 240,
+      padding: "8px 0",
+    }}
+  >
+    <button className="flex items-center w-full px-5 py-3 gap-3 hover:bg-gray-50 text-black text-base font-normal">
+      {/* Replace below with your Finn Insights SVG */}
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-wand-sparkles-icon lucide-wand-sparkles"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>
+      Finn Insights
+    </button>
+    <div className="border-t border-gray-100 mx-4" />
+    <button className="flex items-center w-full px-5 py-3 gap-3 hover:bg-gray-50 text-black text-base font-normal">
+      {/* Replace below with your Jlogs SVG */}
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-library-big-icon lucide-library-big"><rect width="8" height="18" x="3" y="3" rx="1"/><path d="M7 3v18"/><path d="M20.4 18.9c.2.5-.1 1.1-.6 1.3l-1.9.7c-.5.2-1.1-.1-1.3-.6L11.1 5.1c-.2-.5.1-1.1.6-1.3l1.9-.7c.5-.2 1.1.1 1.3.6Z"/></svg>
+      Jlogs
+    </button>
+    <div className="border-t border-gray-100 mx-4" />
+    <button className="flex items-center w-full px-5 py-3 gap-3 hover:bg-gray-50 text-black text-base font-normal">
+      {/* Replace below with your Preferences SVG */}
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-sliders-horizontal-icon lucide-sliders-horizontal">
+        <path d="M10 5H3"/>
+        <path d="M12 19H3"/>
+        <path d="M14 3v4"/>
+        <path d="M16 17v4"/>
+        <path d="M21 12h-9"/>
+        <path d="M21 19h-5"/>
+        <path d="M21 5h-7"/>
+        <path d="M8 10v4"/>
+        <path d="M8 12H3"/>
+      </svg>
+      Preferences
+    </button>
+    <div className="border-t border-gray-100 mx-4" />
+    <button
+  className="flex items-center w-full px-5 py-3 gap-3 hover:bg-gray-50 text-black text-base font-normal"
+  onClick={async () => {
+    try {
+      await account.deleteSession('current'); // Appwrite sign out
+      if (typeof window !== 'undefined') {
+        window.localStorage.clear();
+      }
+      navigate('/sign-in');
+    } catch (e) {
+      console.warn('Sign out failed', e);
+    }
+  }}
+>
+  {/* Optionally add a Sign out SVG */}
+  Sign out
+</button>
+  </div>
+)}
 
       {/* Bottom Action Bar */}
       <div className="content-stretch flex items-center justify-between py-[12px] relative shrink-0 w-full">
