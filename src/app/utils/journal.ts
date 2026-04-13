@@ -27,6 +27,7 @@ export async function createEntry(params: {
   segments?: string;
   localTime?: string;
   mood?: string; 
+  /* tags?: string[]; */
 }) {
   const user = await account.get();
   const userId = user.$id;

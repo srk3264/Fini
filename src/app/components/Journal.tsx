@@ -47,38 +47,60 @@ client
 const functions = new Functions(client);
 const account = new Account(client);
 
-async function getTag(text: string): Promise<"reflections" | "health" | "todo" | "reminders" | undefined> {
+async function getTag(
+  text: string
+): Promise<"reflections" | "health" | "todo" | "reminders" | undefined> {
   const candidateLabels = ["reflections", "health", "todo", "reminders"];
+
   try {
-    await account.get(); // throws if not logged in
+    await account.get();
+
     const execution = await functions.createExecution(
-  "69d85ed70025a371e4e5",
-  JSON.stringify({ text, candidate_labels: candidateLabels }),
-  true
-);
+      "69d85ed70025a371e4e5",
+      JSON.stringify({ text, candidate_labels: candidateLabels }),
+      false
+    );
 
-// Log the entire execution object for debugging
-console.log("Appwrite execution object:", execution);
+    let data: any = null;
 
-let data: any = undefined;
-try { data = execution.stdout ? JSON.parse(execution.stdout) : undefined; } catch {}
-if (!data && (execution as any).response) {
-  try { data = JSON.parse((execution as any).response); } catch {}
+try {
+  const raw = (execution as any)?.responseBody;
+
+  console.log("Raw responseBody:", raw);
+
+  if (!raw || typeof raw !== "string") {
+    console.warn("Empty or non-string responseBody");
+    return undefined;
+  }
+
+  // sometimes Appwrite returns plain text or extra whitespace
+  const cleaned = raw.trim();
+
+  if (!cleaned) {
+    console.warn("Empty responseBody string");
+    return undefined;
+  }
+
+  data = JSON.parse(cleaned);
+} catch (e) {
+  console.warn("JSON parse failed (responseBody not valid JSON):", e);
+  return undefined;
 }
-if (!data && (execution as any).output) {
-  try { data = JSON.parse((execution as any).output); } catch {}
-}
-console.log("Raw backend response", data);
-    if (typeof data?.label === "string" && typeof data?.score === "number") {
-      const threshold = 0.5;
-      if (data.score >= threshold) return data.label as "reflections" | "health" | "todo" | "reminders";
-      return undefined;
+
+    console.log("Appwrite execution object:", execution);
+    console.log("Tag response:", data);
+
+    if (data?.label && typeof data?.score === "number") {
+      return data.score >= 0.5
+        ? (data.label as "reflections" | "health" | "todo" | "reminders")
+        : undefined;
     }
+
     return undefined;
   } catch (e) {
-    console.error("Appwrite proxy error", e);
+    console.error("getTag error", e);
+    return undefined;
   }
-  return undefined;
 }
    
 
@@ -120,22 +142,22 @@ setVoiceState("processing");
 setVoiceStatus("Processing…");
 };
 
-const closeVoice = async () => {
-  // Flush all captured turns from this session as one entry
+const closeVoice = () => {
   const combined = voiceBuffer.join(" ").trim();
-  if (combined) {
-    try {
-      await saveVoiceEntry(combined);
-    } catch (e) {
-      console.warn("ui.voice:save-on-close:err", e);
-    }
-  }
-  // Reset modal state
+
+  // ✅ CLOSE UI IMMEDIATELY
   setVoiceBuffer([]);
   setVoiceOpen(false);
   setVoiceState("listening");
   setVoiceStatus(undefined);
   setVoiceReply("");
+
+  // ✅ Save in background (no await)
+  if (combined) {
+    saveVoiceEntry(combined).catch((e) =>
+      console.warn("ui.voice:save-on-close:err", e)
+    );
+  }
 };
 
 
@@ -236,15 +258,18 @@ function mapMood(mood: string): string {
 }
 const overallMoodRaw = getMood(text);
 const overallMood = mapMood(overallMoodRaw);
-
+/* const tags = segs
+  .flatMap(s => s.tag ? [s.tag] : []); */
+  
 const doc = await createEntry({
   content: text,
   segments: JSON.stringify(segs),
   localTime: optimistic.time,
+  /* tags, */
   mood: overallMood,
 });
   setEntries((prev) =>
-    prev.map((e) => (e.id === optimistic.id ? { ...optimistic, id: (doc as any).$id } : e))
+    prev.map((e) => (e.id === optimistic.id ? { ...optimistic, id: (doc as any).$id, segments: segs, } : e))
   );
   } catch (err) {
   console.warn("ui.save:text:err", err);
