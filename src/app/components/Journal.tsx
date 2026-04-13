@@ -284,26 +284,51 @@ const doc = await createEntry({
     setSwipedEntryId(null);
   };
 
-  const handleTagSegment = (
-    entryId: string,
-    segmentIndex: number,
-    tag: "reflections" | "health" | "todo" | "reminders"
-  ) => {
-    setEntries(
-      entries.map((entry) => {
-        if (entry.id === entryId) {
-          const newSegments = [...entry.segments];
-          newSegments[segmentIndex] = {
-            ...newSegments[segmentIndex],
-            tag,
-          };
-          return { ...entry, segments: newSegments };
-        }
-        return entry;
-      })
-    );
-    setShowTagMenu(null);
-  };
+  const allowedMoods = ["very_bad", "bad", "neutral", "good", "very_good"];
+function mapMood(mood: string): string {
+  if (mood === "positive") return "good";
+  if (mood === "negative") return "bad";
+  if (allowedMoods.includes(mood)) return mood;
+  return "neutral";
+}
+
+  const handleTagSegment = async (
+  entryId: string,
+  segmentIndex: number,
+  tag: "reflections" | "health" | "todo" | "reminders"
+) => {
+  // Update state immediately
+  const updatedEntries = entries.map((entry) => {
+    if (entry.id === entryId) {
+      const newSegments = [...entry.segments];
+      newSegments[segmentIndex] = {
+        ...newSegments[segmentIndex],
+        tag,
+      };
+      return { ...entry, segments: newSegments };
+    }
+    return entry;
+  });
+
+  setEntries(updatedEntries);
+  setShowTagMenu(null);
+
+  // Persist the change to the database
+  const entryToUpdate = updatedEntries.find((e) => e.id === entryId);
+  if (entryToUpdate) {
+    try {
+      await createEntry({
+        content: entryToUpdate.segments.map((s) => s.text).join(" "),
+        segments: JSON.stringify(entryToUpdate.segments),
+        localTime: entryToUpdate.time,
+        mood: mapMood(getMood(entryToUpdate.segments.map((s) => s.text).join(" "))),
+        /* tags: JSON.stringify(entryToUpdate.segments.flatMap((s) => s.tag ? [s.tag] : [])), */
+      });
+    } catch (e) {
+      console.warn("Failed to save updated tag:", e);
+    }
+  }
+};
 
   const handleTextSelection = (entryId: string, e: React.MouseEvent | React.TouchEvent) => {
     const selection = window.getSelection();
@@ -318,12 +343,14 @@ const doc = await createEntry({
         for (let i = 0; i < entry.segments.length; i++) {
           const segmentLength = entry.segments[i].text.length;
           if (charCount + segmentLength >= selection.anchorOffset) {
-            setShowTagMenu({
-              entryId,
-              segmentIndex: i,
-              x: rect.left,
-              y: rect.bottom + window.scrollY,
-            });
+            const rect = range.getBoundingClientRect();
+
+setShowTagMenu({
+  entryId,
+  segmentIndex: i,
+  x: rect.left + window.scrollX,
+  y: rect.bottom + window.scrollY,
+});
             break;
           }
           charCount += segmentLength;
@@ -423,7 +450,7 @@ const fetchOpenRouterReply = async (text: string, persona: string): Promise<stri
 
   const sys =
     (import.meta.env.VITE_OPENROUTER_SYSTEM as string | undefined) ||
-    `You are a ${persona || "Balanced"} journaling companion. Reply in 1–2 sentences.`;
+    `You are a ${persona || "Balanced"} journaling companion. Directly respond to the user input in 1–2 sentences.`;
 
   const body = {
     model,
