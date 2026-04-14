@@ -43,6 +43,10 @@ export const router = createBrowserRouter([
   path: "/insights",
   Component: AIInsights,
 },
+{
+path: "/journal",
+    element: <Journal />,
+},
   {
     path: "/onboarding",
     Component: PostSignupOnboardingLayout,
