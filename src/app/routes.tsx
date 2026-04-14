@@ -8,6 +8,7 @@ import { OnboardingScreen1, OnboardingScreen2, OnboardingScreen3 } from "./compo
 import { FunctionalSignUpScreen, FunctionalSignInScreen } from "./components/FunctionalAuthScreens";
 import PostSignupOnboardingLayout from "./components/PostSignupOnboardingLayout";
 import Journal from "./components/Journal";
+import AIInsights from "./components/AIInsights";
 import {
   NicknameStep,
   AIPersonaStep,
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
       { path: "sign-in", Component: FunctionalSignInScreen },
     ],
   },
+  {
+  path: "/insights",
+  Component: AIInsights,
+},
   {
     path: "/onboarding",
     Component: PostSignupOnboardingLayout,

@@ -89,5 +89,10 @@
     "overrides": {
       "vite": "6.3.5"
     }
-  }
+  },
+  "description": "This is a code bundle for Fini AI. The original project is available at https://www.figma.com/design/khsWqaOqt1V9uPIRWDVy8L/Fini-AI.",
+  "main": "figma-mcp-server.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
