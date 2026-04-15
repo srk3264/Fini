@@ -3,6 +3,8 @@ import leafImg from "../../assets/leaf.png";
 import { useNavigate } from "react-router";
 import { databases } from "../utils/appwrite";
 import { Query } from "appwrite";
+const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
+const OPENROUTER_MODEL = import.meta.env.VITE_OPENROUTER_MODEL;
 
 
 // Placeholder for mood data type
@@ -26,6 +28,14 @@ const moodScore: Record<MoodEntry["mood"], number> = {
   good: 1,
   very_good: 2,
 };
+// Figma-inspired mood bubble colors
+const moodBubbleColors: Record<string, string> = {
+  very_bad: "#E86A2A",   // angry (orange-red)
+  bad: "#FFCF48",        // neutral (yellow)
+  neutral: "#9BCCFF",    // calm (blue)
+  good: "#7DC66B",       // happy (green)
+  very_good: "#4CAF50",  // very happy (darker green)
+};
 
 export default function AIInsights() {
   const navigate = useNavigate();
@@ -33,18 +43,61 @@ export default function AIInsights() {
   const [quoteAuthor, setQuoteAuthor] = useState<string>("");
   const [moodData, setMoodData] = useState<MoodEntry[]>([]); // To be replaced with real data
 
-  // Fetch a motivational quote
   useEffect(() => {
-fetch("https://api.allorigins.win/raw?url=https://api.quotable.io/random")
-    .then((res) => res.json())
-    .then((data) => {
-      setQuote(data.content);
-      setQuoteAuthor(data.author);
-    })
-    .catch(() => {
+  async function fetchQuote() {
+    const quote_prompt = `
+Generate a short motivational quote and its author for a journaling app user.
+Respond in this exact JSON format: {"quote": "...", "author": "..."}
+`;
+
+    try {
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: OPENROUTER_MODEL,
+          messages: [{ role: "user", content: quote_prompt }]
+        })
+      });
+
+      const data = await response.json();
+      const aiText = data.choices?.[0]?.message?.content || "";
+
+      let quote = "";
+      let author = "";
+
+      try {
+        // Try direct JSON parse
+        ({ quote, author } = JSON.parse(aiText));
+      } catch {
+        // Try to extract JSON substring
+        const match = aiText.match(/\{[\s\S]*\}/);
+        if (match) {
+          try {
+            ({ quote, author } = JSON.parse(match[0]));
+          } catch {
+            // fallback below
+          }
+        }
+      }
+
+      if (!quote) {
+        setQuote("Stay positive and keep journaling!");
+        setQuoteAuthor("Finn AI");
+      } else {
+        setQuote(quote);
+        setQuoteAuthor(author);
+      }
+    } catch (e) {
       setQuote("Stay positive and keep journaling!");
       setQuoteAuthor("Finn AI");
-    });
+    }
+  }
+
+  fetchQuote();
 }, []);
 
   useEffect(() => {
@@ -181,10 +234,10 @@ console.log('last7 mood graph data', last7);
       alignSelf: 'stretch',
       textAlign: 'center',
       color: 'black',
-      fontSize: 16,
+      fontSize: 24,
       fontFamily: 'MuseoModerno',
       fontWeight: 200,
-      lineHeight: '22.4px',
+      lineHeight: '24px',
       wordWrap: 'break-word'
     }}>“{quote}”</div>
     <div style={{
@@ -282,28 +335,70 @@ console.log('last7 mood graph data', last7);
 </div>
 
       {/* Monthly Mood Bubble Chart */}
-      <div className="bg-white rounded-2xl p-6 shadow flex flex-col items-center">
-        <h2 className="text-base font-semibold mb-4">Monthly Mood Bubbles</h2>
-        <div className="flex gap-4 justify-center items-end h-24">
-          {Object.entries(moodCounts).map(([mood, count]) => (
-            <div key={mood} className="flex flex-col items-center">
-              <div
-                className="rounded-full"
-                style={{
-                  width: 24 + count * 4,
-                  height: 24 + count * 4,
-                  background: moodColors[mood],
-                  opacity: 0.8,
-                  border: "2px solid #fff",
-                  marginBottom: 4,
-                }}
-              />
-              <span className="text-xs text-gray-500 capitalize">{mood.replace("_", " ")}</span>
-              <span className="text-xs text-gray-400">{count}</span>
-            </div>
-          ))}
+<div className="bg-white rounded-2xl p-6 shadow flex flex-col items-center">
+  <div
+  style={{
+    color: 'black',
+    fontSize: 15,
+    fontFamily: 'DM Sans',
+    fontWeight: 400,
+    lineHeight: '20px',
+    wordWrap: 'break-word',
+    marginBottom: 16
+    
+  }}
+>
+  Monthly Mood Bubbles
+</div>
+  
+  <div style={{ height: 16 }} /> {/* Add space between title and bubbles */}
+  <div
+    style={{
+      width: '100%',
+      overflowX: 'auto',
+      WebkitOverflowScrolling: 'touch',
+      display: 'flex',
+      flexDirection: 'row',
+      gap: 32,
+      justifyContent: 'flex-start',
+      alignItems: 'flex-end',
+      minHeight: 180,
+      paddingBottom: 8,
+      paddingLeft: 8,
+      paddingRight: 8,
+      marginBottom: 8,
+      maxWidth: 400      
+    }}
+  >
+    {Object.entries(moodCounts)
+    .filter(([mood]) => ["very_bad", "bad", "neutral", "good", "very_good"].includes(mood))
+    .map(([mood, count]) => {
+      const minBubble = 48;
+      const maxBubble = 120;
+      const moodCountValues = Object.values(moodCounts);
+      const maxCount = Math.max(...moodCountValues, 1);
+      const size = minBubble + ((count / maxCount) * (maxBubble - minBubble));
+      return (
+        <div key={mood} className="flex flex-col items-center" style={{ minWidth: size }}>
+          <div
+            className="rounded-full"
+            style={{
+              width: size,
+              height: size,
+              background: moodBubbleColors[mood],
+              opacity: 0.8,
+              border: "2px solid #fff",
+              marginBottom: 4,
+              
+            }}
+          />
+          <span className="text-xs text-gray-500 capitalize">{mood.replace("_", " ")}</span>
+          <span className="text-xs text-gray-400">{count}</span>
         </div>
-      </div>
+      );
+    })}
+  </div>
+</div>
     </div>
           </div>
   );
