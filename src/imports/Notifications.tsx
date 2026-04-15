@@ -229,8 +229,9 @@ function Frame16() {
 
 export default function Notifications() {
   return (
-    <div className="bg-white content-stretch flex flex-col items-start justify-between px-[16px] relative size-full" data-name="Notifications">
+    <div className="flex flex-col min-h-screen px-4 py-6 bg-white">
       <Frame17 />
+       <div className="flex-1" />
       <Frame16 />
     </div>
   );

@@ -338,8 +338,9 @@ function Frame5() {
 
 export default function Name() {
   return (
-    <div className="bg-white content-stretch flex flex-col gap-[392px] items-start px-[16px] relative size-full" data-name="Name">
+    <div className="flex flex-col min-h-screen px-4 py-6 bg-white">
       <Frame4 />
+      <div className="flex-1" />
       <Frame5 />
     </div>
   );

@@ -3,6 +3,7 @@ import leafImg from "../../assets/leaf.png";
 import { useNavigate } from "react-router";
 import { databases } from "../utils/appwrite";
 import { Query } from "appwrite";
+import { useAuth } from "../contexts/AuthContext";
 const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
 const OPENROUTER_MODEL = import.meta.env.VITE_OPENROUTER_MODEL;
 
@@ -39,6 +40,10 @@ const moodBubbleColors: Record<string, string> = {
 
 export default function AIInsights() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+if (!user) {
+  return <div className="text-center py-12 text-gray-400">Please sign in to view insights.</div>;
+}
   const [quote, setQuote] = useState<string>("");
   const [quoteAuthor, setQuoteAuthor] = useState<string>("");
   const [moodData, setMoodData] = useState<MoodEntry[]>([]); // To be replaced with real data

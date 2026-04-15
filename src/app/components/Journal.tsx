@@ -16,7 +16,8 @@ import mascotProcessing from "../../assets/Finis-1.png";
 import mascotResponse from "../../assets/Finis-2.png";
 import winkSentiment from 'wink-sentiment';
 import { Client, Functions, Account } from "appwrite";
-
+import { updateEntry } from "../utils/journal";
+import { deleteEntry } from "../utils/journal";
 
 interface TextSegment {
   text: string;
@@ -283,10 +284,15 @@ const doc = await createEntry({
   }
   };
 
-  const handleDeleteEntry = (id: string) => {
-    setEntries(entries.filter((entry) => entry.id !== id));
-    setSwipedEntryId(null);
-  };
+  const handleDeleteEntry = async (id: string) => {
+  setEntries(entries.filter((entry) => entry.id !== id));
+  setSwipedEntryId(null);
+  try {
+    await deleteEntry(id);
+  } catch (e) {
+    console.warn("Failed to delete entry:", e);
+  }
+};
 
   const allowedMoods = ["very_bad", "bad", "neutral", "good", "very_good"];
 function mapMood(mood: string): string {
@@ -301,32 +307,33 @@ function mapMood(mood: string): string {
   segmentIndex: number,
   tag: "reflections" | "health" | "todo" | "reminders"
 ) => {
-  // Update state immediately
-  const updatedEntries = entries.map((entry) => {
-    if (entry.id === entryId) {
-      const newSegments = [...entry.segments];
-      newSegments[segmentIndex] = {
-        ...newSegments[segmentIndex],
-        tag,
-      };
-      return { ...entry, segments: newSegments };
-    }
-    return entry;
-  });
-
-  setEntries(updatedEntries);
+  // Prevent double call by disabling menu
   setShowTagMenu(null);
 
-  // Persist the change to the database
-  const entryToUpdate = updatedEntries.find((e) => e.id === entryId);
+  // Update state immediately
+  setEntries((prev) =>
+    prev.map((entry) => {
+      if (entry.id === entryId) {
+        const newSegments = [...entry.segments];
+        newSegments[segmentIndex] = {
+          ...newSegments[segmentIndex],
+          tag,
+        };
+        return { ...entry, segments: newSegments };
+      }
+      return entry;
+    })
+  );
+
+  // Persist the change to the database (update, not create)
+  const entryToUpdate = entries.find((e) => e.id === entryId);
   if (entryToUpdate) {
     try {
-      await createEntry({
+      await updateEntry(entryId, {
         content: entryToUpdate.segments.map((s) => s.text).join(" "),
         segments: JSON.stringify(entryToUpdate.segments),
         localTime: entryToUpdate.time,
         mood: mapMood(getMood(entryToUpdate.segments.map((s) => s.text).join(" "))),
-        /* tags: JSON.stringify(entryToUpdate.segments.flatMap((s) => s.tag ? [s.tag] : [])), */
       });
     } catch (e) {
       console.warn("Failed to save updated tag:", e);
@@ -375,23 +382,33 @@ setShowTagMenu({
     }
   };
 
-  const handleSaveEdit = () => {
-    if (editingEntryId && editingText.trim()) {
-      setEntries(
-        entries.map((entry) => {
-          if (entry.id === editingEntryId) {
-            return {
-              ...entry,
-              segments: [{ text: editingText }],
-            };
-          }
-          return entry;
-        })
-      );
+  const handleSaveEdit = async () => {
+  if (editingEntryId && editingText.trim()) {
+    setEntries(
+      entries.map((entry) => {
+        if (entry.id === editingEntryId) {
+          return {
+            ...entry,
+            segments: [{ text: editingText }],
+          };
+        }
+        return entry;
+      })
+    );
+    // Update in DB
+    try {
+      await updateEntry(editingEntryId, {
+        content: editingText,
+        segments: JSON.stringify([{ text: editingText }]),
+        // Add other fields as needed
+      });
+    } catch (e) {
+      console.warn("Failed to update entry:", e);
     }
-    setEditingEntryId(null);
-    setEditingText("");
-  };
+  }
+  setEditingEntryId(null);
+  setEditingText("");
+};
 
 // Save recognized speech as a journal entry + optimistic UI
 // Save recognized speech as a journal entry + optimistic UI
@@ -454,7 +471,7 @@ const fetchOpenRouterReply = async (text: string, persona: string): Promise<stri
 
   const sys =
     (import.meta.env.VITE_OPENROUTER_SYSTEM as string | undefined) ||
-    `You are a ${persona || "Balanced"} journaling companion. Directly respond to the user input in 1–2 sentences.  Do not reference the user's input or your own process.`;
+    `Respond in 1–2 sentences in a ${persona || "Balanced"} manner.`;
 
   const body = {
     model,

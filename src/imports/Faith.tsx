@@ -288,8 +288,9 @@ function Frame9() {
 
 export default function Faith() {
   return (
-    <div className="bg-white content-stretch flex flex-col items-start justify-between px-[16px] relative size-full" data-name="Faith">
+    <div className="flex flex-col min-h-screen px-4 py-6 bg-white">
       <Frame14 />
+      <div className="flex-1" />
       <Frame9 />
     </div>
   );
