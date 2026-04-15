@@ -61,7 +61,7 @@ function Frame4() {
 
 function Frame1() {
   return (
-    <div className="bg-[#ffcf48] h-[34px] opacity-38 relative rounded-[100px] shrink-0 w-full">
+    <div className="bg-[#ffcf48] h-[34px] opacity-38 relative rounded-[100px] shrink-0 w-full pt-16">
       <div className="flex flex-row items-center justify-center size-full">
         <div className="content-stretch flex items-center justify-center p-[10px] relative size-full">
           <p className="font-['DM_Sans:Regular',sans-serif] font-normal leading-[21px] relative shrink-0 text-[16px] text-black whitespace-nowrap" style={{ fontVariationSettings: "'opsz' 14" }}>
@@ -322,10 +322,10 @@ function RowNumbersSpaceGo() {
 
 function Frame5() {
   return (
-    <div className="content-stretch flex flex-col gap-[24px] items-start relative shrink-0 w-full">
-      <Frame1 />
-      <div className="backdrop-blur-[10px] bg-[rgba(204,206,211,0.76)] relative shrink-0 w-full" data-name=".Keys Layout / Alphabetic / English / No home indicator">
-        <div className="content-stretch flex flex-col gap-[12px] items-start px-[3px] py-[8px] relative w-full">
+    <div className="w-full">
+      <div className=" w-full bg-[rgba(204,206,211,0.76)] backdrop-blur-[10px] z-50">
+        <div className="flex flex-col gap-[12px] px-[3px] py-[8px] w-full max-w-md mx-auto">
+          <Frame1 />
           <RowAlphabetic />
           <RowAlphabetic1 />
           <RowShiftAlphabeticDelete />
@@ -338,14 +338,15 @@ function Frame5() {
 
 export default function Name() {
   return (
-    <div className="flex flex-col min-h-screen px-4 py-6 bg-white">
-      <Frame4 />
-       <div className="mt-auto w-full">
-        <button className="w-full bg-[#ffcf48] rounded-full py-3">
-          Next
-        </button>
-      </div>
+    <div className="flex flex-col min-h-screen bg-white">
+      {/* Top content area - grows to fill space */}
+      
+        <div className="flex flex-col flex-1 px-4 py-6 overflow-auto w-full max-w-md mx-auto">
+          <Frame4 />
+        </div>
+      
 
+      {/* Keyboard / Bottom bar - always at the very bottom */}
       <Frame5 />
     </div>
   );

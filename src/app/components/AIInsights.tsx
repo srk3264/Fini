@@ -108,10 +108,12 @@ Respond in this exact JSON format: {"quote": "...", "author": "..."}
   useEffect(() => {
   const fetchMoods = async () => {
     try {
+      if (!user) return;
       const res = await databases.listDocuments(
         "69c1cbed0025338ed999",
         "journal_entries",
         [
+          Query.equal("userId", [user.id]), // Only fetch current user's entries
           Query.limit(1000)
         ]
       );
@@ -128,7 +130,7 @@ Respond in this exact JSON format: {"quote": "...", "author": "..."}
   };
 
   fetchMoods();
-}, []);
+}, [user]);
 
   // Helper for mood to y-value
   const moodToY = (mood: string) => {
