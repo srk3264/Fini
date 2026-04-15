@@ -220,7 +220,12 @@ export default function AiPersona() {
   return (
     <div className="flex flex-col min-h-screen px-4 py-6 bg-white">
       <Frame13 />
-      <div className="flex-1" />
+       <div className="mt-auto w-full">
+        <button className="w-full bg-[#ffcf48] rounded-full py-3">
+          Next
+        </button>
+      </div>
+
       <Frame8 />
     </div>
   );
