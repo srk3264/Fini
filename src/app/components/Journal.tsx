@@ -454,7 +454,7 @@ const fetchOpenRouterReply = async (text: string, persona: string): Promise<stri
 
   const sys =
     (import.meta.env.VITE_OPENROUTER_SYSTEM as string | undefined) ||
-    `You are a ${persona || "Balanced"} journaling companion. Directly respond to the user input in 1–2 sentences.`;
+    `You are a ${persona || "Balanced"} journaling companion. Directly respond to the user input in 1–2 sentences.  Do not reference the user's input or your own process.`;
 
   const body = {
     model,
