@@ -460,19 +460,21 @@ try {
 // Persona is passed in; model comes only from env
 
 function trimToTwoSentences(text: string): string {
-  // Remove lines that sound like instructions or meta-commentary
   const filtered = text
+    .replace(/^(okay[,.\s]*|so[,.\s]*|alright[,.\s]*|hmm[,.\s]*)/i, "")
+    .replace(/the user (said|is|feels|mentioned)[^.!?]*[.!?]/gi, "")
+    .replace(/i (should|need to|will)[^.!?]*[.!?]/gi, "")
     .split(/\n+/)
     .filter((line: string) =>
-      !/let's break down|guidelines|as a Balanced|AI assistant|responding to|looking at the guidelines|they want me|the user's message|I should avoid|I should offer|I should acknowledge|I should be helpful|I should respond|I should/.test(line.toLowerCase())
+      !/guidelines|ai assistant|responding to|analysis|let me|first,|they want me/i.test(line.toLowerCase())
     )
-    .join(' ')
-    .replace(/\s+/g, ' ')
+    .join(" ")
+    .replace(/\s+/g, " ")
     .trim();
-  // Split by sentence-ending punctuation
+
   const sentences = filtered.match(/[^.!?]+[.!?]+/g);
   if (!sentences) return filtered;
-  return sentences.slice(0, 2).join(' ').trim();
+  return sentences.slice(0, 2).join(" ").trim();
 }
 
 const fetchOpenRouterReply = async (text: string, persona: string): Promise<string> => {
@@ -487,8 +489,19 @@ const fetchOpenRouterReply = async (text: string, persona: string): Promise<stri
   }
 
   const sys =
-    (import.meta.env.VITE_OPENROUTER_SYSTEM as string | undefined) ||
-    `Just respond to the user in a ${persona || "Balanced"} manner.`;
+  (import.meta.env.VITE_OPENROUTER_SYSTEM as string | undefined) ||
+  `You are talking directly to the user.
+
+Rules:
+- Speak in second person ("you"), never refer to "the user"
+- Do NOT describe what you are doing
+- Do NOT explain your reasoning
+- Do NOT analyze the message
+- Do NOT say things like "the user said", "okay", or "first"
+- Respond naturally like a real conversation
+- Keep it to 1–2 sentences
+
+Just respond to the message.`;
 
   const body = {
     model,
