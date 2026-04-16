@@ -471,7 +471,7 @@ const fetchOpenRouterReply = async (text: string, persona: string): Promise<stri
 
   const sys =
     (import.meta.env.VITE_OPENROUTER_SYSTEM as string | undefined) ||
-    `Respond in 1–2 sentences in a ${persona || "Balanced"} manner.`;
+    `Reply in a maximum of 2 sentences in a ${persona || "Balanced"} manner. Do not explain yourself. Do not mention you are an AI or a model.`;
 
   const body = {
     model,
@@ -996,7 +996,13 @@ console.log("ui.mic", { voiceOpen, voiceState, voiceReady, disabled: micDisabled
         
         disabled={micDisabled}
         
-        className={`${voiceOpen ? 'bg-[#212121]' : 'bg-[#ffcf48]'} content-stretch flex items-center p-[16px] relative rounded-[100px] shrink-0 cursor-pointer transition-all `}
+        className={`
+  content-stretch flex items-center p-[16px] relative rounded-[100px] shrink-0 cursor-pointer transition-all
+  ${micDisabled && voiceState !== "processing"
+    ? 'bg-[rgba(33,33,33,0.60)]'
+    : (voiceOpen ? 'bg-[#212121]' : 'bg-[#ffcf48]')
+  }
+`}
         title={voiceOpen ? (voiceState === 'processing' ? 'Processing…' : (voiceReady ? 'Save' : 'Preparing…')) : 'Start voice'}
       >
         <div
