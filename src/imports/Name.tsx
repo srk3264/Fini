@@ -1,353 +1,89 @@
-import imgBack from "figma:asset/e60e4637762be3f449b41c550b8780a6e47c0476.png";
+import React, { useRef, useState } from "react";
+import { databases, DATABASE_ID, PROFILES_COLLECTION_ID, ID, account } from "../app/utils/appwrite";
 
-function Frame() {
-  return (
-    <div className="content-stretch flex items-center justify-between py-[16px] relative shrink-0 w-full">
-      <div className="relative shrink-0 size-[16px]" data-name="Back">
-        <img alt="" className="absolute inset-0 max-w-none object-contain pointer-events-none size-full" src={imgBack} />
-      </div>
-      <p className="font-['DM_Sans:Bold',sans-serif] font-bold leading-[20px] relative shrink-0 text-[15px] text-black whitespace-nowrap" style={{ fontVariationSettings: "'opsz' 14" }}>
-        Journal
-      </p>
-      <p className="font-['DM_Sans:Regular',sans-serif] font-normal leading-[16px] relative shrink-0 text-[12px] text-[rgba(0,0,0,0.87)] whitespace-nowrap" style={{ fontVariationSettings: "'opsz' 14" }}>
-        Skip
-      </p>
-    </div>
-  );
-}
+const BackIcon = () => (
+  <svg width="16" height="16" fill="none">
+    <path d="M10 12L6 8l4-4" stroke="#222" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
 
-function Frame2() {
-  return (
-    <div className="content-stretch flex flex-col h-[56px] items-start relative shrink-0 w-full">
-      <Frame />
-    </div>
-  );
-}
+const Name: React.FC = () => {
+  const [nickname, setNickname] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
-function Loader() {
-  return (
-    <div className="bg-[rgba(33,33,33,0.12)] relative rounded-[100px] shrink-0 w-full" data-name="loader">
-      <div className="flex flex-row items-center overflow-clip rounded-[inherit] size-full">
-        <div className="content-stretch flex items-center pr-[313px] relative w-full">
-          <div className="bg-[#ffcf48] flex-[1_0_0] h-[8px] min-h-px min-w-px" />
-        </div>
-      </div>
-    </div>
-  );
-}
+  const handleGo = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      let userId;
+      try {
+        const user = await account.get();
+        userId = user.$id;
+      } catch {
+        userId = undefined;
+      }
+      await databases.createDocument(
+        DATABASE_ID,
+        PROFILES_COLLECTION_ID,
+        userId || ID.unique(),
+        { nickname }
+      );
+      // TODO: Navigate to next screen or show success
+    } catch (err) {
+      setError("Failed to save nickname. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-function Frame3() {
   return (
-    <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 w-full">
-      <Loader />
-      <p className="font-['DM_Sans:SemiBold',sans-serif] font-semibold leading-[22px] relative shrink-0 text-[17px] text-black w-full" style={{ fontVariationSettings: "'opsz' 14" }}>
-        Please enter your nickname
-      </p>
-      <p className="font-['DM_Sans:Regular',sans-serif] font-normal leading-[22px] relative shrink-0 text-[17px] text-[rgba(0,0,0,0.6)] w-full" style={{ fontVariationSettings: "'opsz' 14" }}>
-        Tap to start writing
-      </p>
-    </div>
-  );
-}
-
-function Frame4() {
-  return (
-    <div className="content-stretch flex flex-col gap-[24px] items-start relative shrink-0 w-full">
-      <Frame2 />
-      <Frame3 />
-    </div>
-  );
-}
-
-function Frame1() {
-  return (
-    <div className="bg-[#ffcf48] h-[34px] opacity-38 relative rounded-[100px] shrink-0 w-full pt-16">
-      <div className="flex flex-row items-center justify-center size-full">
-        <div className="content-stretch flex items-center justify-center p-[10px] relative size-full">
-          <p className="font-['DM_Sans:Regular',sans-serif] font-normal leading-[21px] relative shrink-0 text-[16px] text-black whitespace-nowrap" style={{ fontVariationSettings: "'opsz' 14" }}>
-            Next
-          </p>
+    <div className="h-screen flex flex-col bg-white px-4">
+      {/* Top Section */}
+      <div className="flex-1">
+        {/* Header */}
+        <div className="flex items-center justify-between h-14">
+          <button>
+            <BackIcon />
+          </button>
+          <div className="font-bold text-base">Journal</div>
+          <button className="text-xs text-black/80 font-normal">Skip</button>
+        </div>
+        {/* Progress Bar */}
+        <div className="w-full h-2 bg-gray-200 rounded-full mb-6 mt-2">
+          <div className="h-2 bg-[#FFCF48] rounded-full" style={{ width: "25%" }} />
+        </div>
+        {/* Prompt */}
+        <div className="mb-2">
+          <div className="text-lg font-semibold">Please enter your nickname</div>
+          <input
+            ref={inputRef}
+            type="text"
+            className="w-full mt-2 text-lg font-normal text-black/80 border-b-2 border-[#FFCF48] focus:outline-none placeholder:text-black/60"
+            placeholder="Tap to start writing"
+            value={nickname}
+            onChange={e => setNickname(e.target.value)}
+            autoFocus
+            disabled={loading}
+          />
+          {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
         </div>
       </div>
-    </div>
-  );
-}
-
-function RowAlphabetic() {
-  return (
-    <div className="content-stretch flex gap-[5px] items-start relative shrink-0 w-full" data-name="row / alphabetic">
-      <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-        <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-          <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-            <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">Q</p>
-          </div>
-        </div>
-      </div>
-      <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-        <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-          <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-            <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">W</p>
-          </div>
-        </div>
-      </div>
-      <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-        <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-          <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-            <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">E</p>
-          </div>
-        </div>
-      </div>
-      <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-        <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-          <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-            <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">R</p>
-          </div>
-        </div>
-      </div>
-      <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-        <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-          <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-            <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">T</p>
-          </div>
-        </div>
-      </div>
-      <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-        <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-          <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-            <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">Y</p>
-          </div>
-        </div>
-      </div>
-      <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-        <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-          <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-            <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">U</p>
-          </div>
-        </div>
-      </div>
-      <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-        <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-          <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-            <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">I</p>
-          </div>
-        </div>
-      </div>
-      <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-        <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-          <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-            <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">O</p>
-          </div>
-        </div>
-      </div>
-      <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-        <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-          <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-            <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">P</p>
-          </div>
-        </div>
+      {/* Bottom Section */}
+      <div className="w-full flex flex-col gap-6 mb-8">
+        <button
+          className={`w-full h-12 rounded-full flex items-center justify-center text-lg font-normal transition-opacity ${
+            nickname ? "bg-[#FFCF48] opacity-100" : "bg-[#FFCF48] opacity-40"
+          }`}
+          disabled={!nickname || loading}
+          onClick={handleGo}
+        >
+          {loading ? "Saving..." : "Next"}
+        </button>
       </div>
     </div>
   );
-}
+};
 
-function RowAlphabetic1() {
-  return (
-    <div className="relative shrink-0 w-full" data-name="row / alphabetic">
-      <div className="content-stretch flex gap-[5px] items-start px-[18px] relative w-full">
-        <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-          <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-            <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-              <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">A</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-          <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-            <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-              <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">S</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-          <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-            <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-              <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">D</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-          <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-            <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-              <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">F</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-          <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-            <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-              <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">G</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-          <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-            <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-              <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">H</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-          <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-            <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-              <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">J</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-          <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-            <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-              <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">K</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-          <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-            <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-              <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">L</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function RowAlphabetic2() {
-  return (
-    <div className="flex-[1_0_0] min-h-px min-w-px relative" data-name="row / alphabetic">
-      <div className="content-stretch flex gap-[5px] items-start px-[13px] relative w-full">
-        <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-          <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-            <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-              <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">Z</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-          <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-            <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-              <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">X</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-          <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-            <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-              <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">C</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-          <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-            <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-              <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">V</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-          <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-            <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-              <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">B</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-          <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-            <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-              <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">N</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white flex-[1_0_0] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-          <div className="flex flex-row items-center justify-center overflow-clip rounded-[inherit] size-full">
-            <div className="content-stretch flex items-center justify-center p-[7px] relative w-full">
-              <p className="flex-[1_0_0] font-['SF_Pro_Display:Regular',sans-serif] leading-[28px] min-h-px min-w-px not-italic relative text-[22px] text-black text-center">M</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function RowShiftAlphabeticDelete() {
-  return (
-    <div className="content-stretch flex gap-px items-start relative shrink-0 w-full" data-name="row / shift + alphabetic + delete">
-      <div className="bg-white content-stretch flex items-center justify-center overflow-clip p-[11px] relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d] shrink-0 size-[42px]" data-name="Component / Key">
-        <p className="flex-[1_0_0] font-['SF_Pro_Text:Regular',sans-serif] h-[20px] leading-[21px] min-h-px min-w-px not-italic relative text-[16px] text-black text-center">􀆞</p>
-      </div>
-      <RowAlphabetic2 />
-      <div className="bg-[#adb3bc] content-stretch flex items-center justify-center overflow-clip p-[11px] relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d] shrink-0 size-[42px]" data-name="Component / Key">
-        <p className="flex-[1_0_0] font-['SF_Pro_Text:Regular',sans-serif] h-[20px] leading-[21px] min-h-px min-w-px not-italic relative text-[16px] text-black text-center">􀆛</p>
-      </div>
-    </div>
-  );
-}
-
-function RowNumbersSpaceGo() {
-  return (
-    <div className="content-stretch flex gap-[6px] items-start relative shrink-0 w-full" data-name="row / numbers + space + go">
-      <div className="bg-[#adb3bc] content-stretch flex h-[42px] items-start overflow-clip py-[11px] relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d] shrink-0 w-[41px]" data-name="Component / Key">
-        <p className="flex-[1_0_0] font-['SF_Pro_Text:Regular',sans-serif] h-[20px] leading-[21px] min-h-px min-w-px not-italic relative text-[16px] text-black text-center">123</p>
-      </div>
-      <div className="bg-[#adb3bc] content-stretch flex h-[42px] items-center justify-center overflow-clip py-[9px] relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d] shrink-0 w-[41px]" data-name="Component / Key">
-        <p className="flex-[1_0_0] font-['SF_Pro_Text:Regular',sans-serif] leading-[24px] min-h-px min-w-px not-italic relative text-[19px] text-black text-center">􀆪</p>
-      </div>
-      <div className="bg-white content-stretch flex h-[42px] items-center justify-center overflow-clip py-[9px] relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d] shrink-0 w-[32px]" data-name="Component / Key">
-        <p className="flex-[1_0_0] font-['SF_Pro_Text:Regular',sans-serif] leading-[24px] min-h-px min-w-px not-italic relative text-[19px] text-black text-center">􀊰</p>
-      </div>
-      <div className="bg-white flex-[1_0_0] h-[42px] min-h-px min-w-px relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d]" data-name="Component / Key">
-        <div className="overflow-clip rounded-[inherit] size-full">
-          <div className="content-stretch flex items-start p-[11px] relative size-full">
-            <p className="flex-[1_0_0] font-['SF_Pro_Text:Regular',sans-serif] leading-[21px] min-h-px min-w-px not-italic relative text-[16px] text-black text-center">space</p>
-          </div>
-        </div>
-      </div>
-      <div className="bg-[#adb3bc] content-stretch flex h-[42px] items-center justify-center overflow-clip p-[11px] relative rounded-[4.6px] shadow-[0px_1px_0px_0px_#898a8d] shrink-0 w-[88px]" data-name="Component / Key">
-        <p className="flex-[1_0_0] font-['SF_Pro_Text:Regular',sans-serif] h-[20px] leading-[21px] min-h-px min-w-px not-italic relative text-[16px] text-black text-center">Go</p>
-      </div>
-    </div>
-  );
-}
-
-function Frame5() {
-  return (
-    <div className="w-full">
-      <div className=" w-full bg-[rgba(204,206,211,0.76)] backdrop-blur-[10px] z-50">
-        <div className="flex flex-col gap-[12px] px-[3px] py-[8px] w-full max-w-md mx-auto">
-          <Frame1 />
-          <RowAlphabetic />
-          <RowAlphabetic1 />
-          <RowShiftAlphabeticDelete />
-          <RowNumbersSpaceGo />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export default function Name() {
-  return (
-    <div className="flex flex-col min-h-screen bg-white">
-      {/* Top content area - grows to fill space */}
-      
-        <div className="flex flex-col flex-1 px-4 py-6 overflow-auto w-full max-w-md mx-auto">
-          <Frame4 />
-        </div>
-      
-
-      {/* Keyboard / Bottom bar - always at the very bottom */}
-      <Frame5 />
-    </div>
-  );
-}
+export default Name;
