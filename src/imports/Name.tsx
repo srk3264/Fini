@@ -39,9 +39,9 @@ const Name: React.FC = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-white px-4">
+    <div className="min-h-screen flex flex-col justify-between bg-white px-4">
       {/* Top Section */}
-      <div className="flex-1">
+      <div className="mb-8">
         {/* Header */}
         <div className="flex items-center justify-between h-14">
           <button>
@@ -71,7 +71,7 @@ const Name: React.FC = () => {
         </div>
       </div>
       {/* Bottom Section */}
-      <div className="w-full flex flex-col gap-6 mb-8">
+      <div className="w-full flex flex-col gap-6 mb-8 mt-24">
         <button
           className={`w-full h-12 rounded-full flex items-center justify-center text-lg font-normal transition-opacity ${
             nickname ? "bg-[#FFCF48] opacity-100" : "bg-[#FFCF48] opacity-40"
