@@ -458,6 +458,23 @@ try {
 };
 // Fetch a short AI reply based on aiPersona
 // Persona is passed in; model comes only from env
+
+function trimToTwoSentences(text: string): string {
+  // Remove lines that sound like instructions or meta-commentary
+  const filtered = text
+    .split(/\n+/)
+    .filter((line: string) =>
+      !/let's break down|guidelines|as a Balanced|AI assistant|responding to|looking at the guidelines|they want me|the user's message|I should avoid|I should offer|I should acknowledge|I should be helpful|I should respond|I should/.test(line.toLowerCase())
+    )
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  // Split by sentence-ending punctuation
+  const sentences = filtered.match(/[^.!?]+[.!?]+/g);
+  if (!sentences) return filtered;
+  return sentences.slice(0, 2).join(' ').trim();
+}
+
 const fetchOpenRouterReply = async (text: string, persona: string): Promise<string> => {
   const key =
     (import.meta.env.VITE_OPENROUTER_API_KEY as string | undefined) ||
@@ -471,7 +488,7 @@ const fetchOpenRouterReply = async (text: string, persona: string): Promise<stri
 
   const sys =
     (import.meta.env.VITE_OPENROUTER_SYSTEM as string | undefined) ||
-    `Reply in a maximum of 2 sentences in a ${persona || "Balanced"} manner. Do not explain yourself. Do not mention you are an AI or a model.`;
+    `Just respond to the user in a ${persona || "Balanced"} manner.`;
 
   const body = {
     model,
@@ -491,7 +508,8 @@ const fetchOpenRouterReply = async (text: string, persona: string): Promise<stri
     });
     console.log("openrouter:status", res.status);
     const data = await res.json();
-    return (data?.choices?.[0]?.message?.content || "").trim();
+const raw = (data?.choices?.[0]?.message?.content || "").trim();
+return trimToTwoSentences(raw);
   } catch (e) {
     console.warn("openrouter:error", e);
     return "";
