@@ -741,9 +741,7 @@ console.log("ui.mic", { voiceOpen, voiceState, voiceReady, disabled: micDisabled
               className="content-stretch flex gap-[24px] items-start relative shrink-0 w-full mb-[24px] cursor-text"
               onClick={handleStartTyping}
             >
-              <p className="font-['DM_Sans',sans-serif] font-normal leading-[16px] relative shrink-0 text-[12px] text-[rgba(0,0,0,0.6)] whitespace-nowrap">
-                {getCurrentTime()}
-              </p>
+              {/* Placeholder view: do not show a timestamp */}
               <p className="flex-[1_0_0] font-['DM_Sans',sans-serif] font-normal leading-[22px] relative text-[17px] text-[rgba(0,0,0,0.38)] min-h-px min-w-px break-words">
                 Start writing your first entry...
               </p>
@@ -756,9 +754,7 @@ console.log("ui.mic", { voiceOpen, voiceState, voiceReady, disabled: micDisabled
               className="content-stretch flex gap-[24px] items-start relative shrink-0 w-full mb-[24px] cursor-text"
               onClick={handleStartTyping}
             >
-              <p className="font-['DM_Sans',sans-serif] font-normal leading-[16px] relative shrink-0 text-[12px] text-[rgba(0,0,0,0.6)] whitespace-nowrap">
-                {getCurrentTime()}
-              </p>
+              {/* AI summary placeholder: hide timestamp */}
               <p className="flex-[1_0_0] font-['DM_Sans',sans-serif] font-normal leading-[22px] relative text-[17px] text-[rgba(0,0,0,0.38)] min-h-px min-w-px break-words">
                 {aiSummary}
               </p>
@@ -767,9 +763,11 @@ console.log("ui.mic", { voiceOpen, voiceState, voiceReady, disabled: micDisabled
           {/* Current Entry Being Typed */}
 {isTyping && (
   <div className="content-stretch flex gap-[24px] items-start relative shrink-0 w-full">
-    <p className="font-['DM_Sans',sans-serif] font-normal leading-[16px] relative shrink-0 text-[12px] text-[rgba(0,0,0,0.6)] whitespace-nowrap">
-      {getCurrentTime()}
-    </p>
+    {currentEntry.trim() !== "" && (
+      <p className={"font-['DM_Sans',sans-serif] font-normal leading-[16px] relative shrink-0 text-[12px] text-[rgba(0,0,0,0.6)] whitespace-nowrap entry-timestamp"}>
+        {getCurrentTime()}
+      </p>
+    )}
    {(() => {
       console.log('[JOURNAL PLACEHOLDER DEBUG]', {
         isFirstEverEntry,
@@ -835,7 +833,7 @@ console.log("ui.mic", { voiceOpen, voiceState, voiceReady, disabled: micDisabled
                 document.addEventListener("touchend", handleTouchEnd);
               }}
             >
-              <p className="font-['DM_Sans',sans-serif] font-normal leading-[16px] relative shrink-0 text-[12px] text-[rgba(0,0,0,0.6)] whitespace-nowrap">
+              <p className="font-['DM_Sans',sans-serif] font-normal leading-[16px] relative shrink-0 text-[12px] text-[rgba(0,0,0,0.6)] whitespace-nowrap entry-timestamp">
                 {entry.time}
               </p>
               <div className="flex-[1_0_0] min-h-px min-w-px relative">
