@@ -1,7 +1,7 @@
 module.exports = async ({ req, res, log, error }) => {
   const HF_API_KEY = process.env.HF_API_KEY;
   const HF_TAGGING_MODEL =
-    process.env.HF_TAGGING_MODEL || "facebook/bart-large-mnli";
+    process.env.HF_TAGGING_MODEL || "valhalla/distilbart-mnli-12-1";
 
   log("Function started");
 
