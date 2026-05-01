@@ -265,9 +265,8 @@
 
   /* Journal timestamp utility */
   .entry-timestamp {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--color-muted-foreground);
-    text-align: right;
-    margin-top: 8px;
+    width: 100%;
   }
 }

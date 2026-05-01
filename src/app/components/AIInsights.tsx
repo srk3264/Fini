@@ -4,8 +4,8 @@ import { useNavigate } from "react-router";
 import { databases } from "../utils/appwrite";
 import { Query } from "appwrite";
 import { useAuth } from "../contexts/AuthContext";
-const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
-const OPENROUTER_MODEL = import.meta.env.VITE_OPENROUTER_MODEL;
+// Removed: const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
+// Removed: const OPENROUTER_MODEL = import.meta.env.VITE_OPENROUTER_MODEL;
 
 
 // Placeholder for mood data type
@@ -56,14 +56,12 @@ Respond in this exact JSON format: {"quote": "...", "author": "..."}
 `;
 
     try {
-      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      const response = await fetch("/.netlify/functions/openrouter", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          model: OPENROUTER_MODEL,
           messages: [{ role: "user", content: quote_prompt }]
         })
       });

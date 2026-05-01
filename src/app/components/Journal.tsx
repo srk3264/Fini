@@ -478,16 +478,6 @@ function trimToTwoSentences(text: string): string {
 }
 
 const fetchOpenRouterReply = async (text: string, persona: string): Promise<string> => {
-  const key =
-    (import.meta.env.VITE_OPENROUTER_API_KEY as string | undefined) ||
-    (import.meta.env.VITE_OPENROUTER_KEY as string | undefined);
-  const model = import.meta.env.VITE_OPENROUTER_MODEL as string | undefined;
-
-  if (!key || !model) {
-    console.warn("openrouter:missing-key-or-model");
-    return "";
-  }
-
   const sys =
   (import.meta.env.VITE_OPENROUTER_SYSTEM as string | undefined) ||
   `You are talking directly to the user.
@@ -504,7 +494,6 @@ Rules:
 Just respond to the message.`;
 
   const body = {
-    model,
     messages: [
       { role: "system", content: sys },
       { role: "user", content: text },
@@ -514,9 +503,9 @@ Just respond to the message.`;
   };
 
   try {
-    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    const res = await fetch("/.netlify/functions/openrouter", {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
     console.log("openrouter:status", res.status);
@@ -733,16 +722,16 @@ console.log("ui.mic", { voiceOpen, voiceState, voiceReady, disabled: micDisabled
       </div>
 
       {/* Entries */}
-      <div className="flex-[1_0_0] min-h-px min-w-px relative w-full overflow-y-auto">
-        <div className="content-stretch flex flex-col items-start py-[24px] relative w-full">
+      <div className="flex-[1_0_0] min-h-px min-w-0 relative w-full overflow-y-auto">
+        <div className="content-stretch flex flex-col gap-[24px] items-start py-[24px] relative w-full">
           {/* First Ever Entry - Empty State */}
           {isFirstEverEntry && !isTyping && (
             <div
-              className="content-stretch flex gap-[24px] items-start relative shrink-0 w-full mb-[24px] cursor-text"
+              className="content-stretch flex flex-col items-end relative shrink-0 w-full cursor-text"
               onClick={handleStartTyping}
             >
               {/* Placeholder view: do not show a timestamp */}
-              <p className="flex-[1_0_0] font-['DM_Sans',sans-serif] font-normal leading-[22px] relative text-[17px] text-[rgba(0,0,0,0.38)] min-h-px min-w-px break-words">
+              <p className="flex-[1_0_0] font-['DM_Sans',sans-serif] font-normal leading-[22px] relative text-[17px] text-[rgba(0,0,0,0.38)] min-h-px min-w-0 break-words">
                 Start writing your first entry...
               </p>
             </div>
@@ -751,32 +740,18 @@ console.log("ui.mic", { voiceOpen, voiceState, voiceReady, disabled: micDisabled
           {/* AI Summary - First Entry of the Day */}
           {!isFirstEverEntry && !hasEntriesToday && !isTyping && entries.length === 0 && (
             <div
-              className="content-stretch flex gap-[24px] items-start relative shrink-0 w-full mb-[24px] cursor-text"
+              className="content-stretch flex flex-col items-end relative shrink-0 w-full cursor-text"
               onClick={handleStartTyping}
             >
               {/* AI summary placeholder: hide timestamp */}
-              <p className="flex-[1_0_0] font-['DM_Sans',sans-serif] font-normal leading-[22px] relative text-[17px] text-[rgba(0,0,0,0.38)] min-h-px min-w-px break-words">
+              <p className="flex-[1_0_0] font-['DM_Sans',sans-serif] font-normal leading-[22px] relative text-[17px] text-[rgba(0,0,0,0.38)] min-h-px min-w-0 break-words">
                 {aiSummary}
               </p>
             </div>
           )}
           {/* Current Entry Being Typed */}
 {isTyping && (
-  <div className="content-stretch flex gap-[24px] items-start relative shrink-0 w-full">
-    {currentEntry.trim() !== "" && (
-      <p className={"font-['DM_Sans',sans-serif] font-normal leading-[16px] relative shrink-0 text-[12px] text-[rgba(0,0,0,0.6)] whitespace-nowrap entry-timestamp"}>
-        {getCurrentTime()}
-      </p>
-    )}
-   {(() => {
-      console.log('[JOURNAL PLACEHOLDER DEBUG]', {
-        isFirstEverEntry,
-        entriesLength: entries.length,
-        aiSummary,
-        aiSummaryLoading
-      });
-      return null;
-    })()}
+  <div className="content-stretch flex flex-row items-end justify-between gap-[16px] relative shrink-0 w-full">
     <textarea
       ref={textareaRef}
       value={currentEntry}
@@ -794,16 +769,30 @@ console.log("ui.mic", { voiceOpen, voiceState, voiceReady, disabled: micDisabled
         : aiSummary
       : "What's on your mind?"
   }
-      className="flex-[1_0_0] font-['DM_Sans',sans-serif] font-normal leading-[22px] min-h-px min-w-px relative text-[17px] text-[rgba(0,0,0,0.87)] bg-transparent border-none outline-none resize-none placeholder:text-[rgba(0,0,0,0.38)]"
+      className="flex-1 min-w-0 font-['DM_Sans',sans-serif] font-normal leading-[22px] relative text-[17px] text-[rgba(0,0,0,0.87)] bg-transparent border-none outline-none resize-none placeholder:text-[rgba(0,0,0,0.38)]"
       rows={3}
     />
+    {currentEntry.trim() !== "" && (
+      <p className="font-['DM_Sans',sans-serif] font-normal leading-[16px] relative shrink-0 text-[12px] text-[rgba(0,0,0,0.6)] entry-timestamp whitespace-nowrap">
+        {getCurrentTime()}
+      </p>
+    )}
+   {(() => {
+      console.log('[JOURNAL PLACEHOLDER DEBUG]', {
+        isFirstEverEntry,
+        entriesLength: entries.length,
+        aiSummary,
+        aiSummaryLoading
+      });
+      return null;
+    })()}
   </div>
 )}
           {/* Existing Entries */}
           {entries.map((entry) => (
             <div
               key={entry.id}
-              className="content-stretch flex gap-[24px] items-start relative shrink-0 w-full mb-[24px]"
+              className="content-stretch flex flex-row items-end justify-between gap-[16px] relative shrink-0 w-full"
               onTouchStart={(e) => {
                 const startX = e.touches[0].clientX;
                 const startTime = Date.now();
@@ -833,10 +822,7 @@ console.log("ui.mic", { voiceOpen, voiceState, voiceReady, disabled: micDisabled
                 document.addEventListener("touchend", handleTouchEnd);
               }}
             >
-              <p className="font-['DM_Sans',sans-serif] font-normal leading-[16px] relative shrink-0 text-[12px] text-[rgba(0,0,0,0.6)] whitespace-nowrap entry-timestamp">
-                {entry.time}
-              </p>
-              <div className="flex-[1_0_0] min-h-px min-w-px relative">
+              <div className="flex-1 min-w-0 flex flex-col gap-[8px] items-start">
                 {editingEntryId === entry.id ? (
                   <textarea
                     ref={editTextareaRef}
@@ -877,6 +863,10 @@ console.log("ui.mic", { voiceOpen, voiceState, voiceReady, disabled: micDisabled
                   </p>
                 )}
               </div>
+              
+              <p className="font-['DM_Sans',sans-serif] font-normal leading-[16px] relative shrink-0 text-[12px] text-[rgba(0,0,0,0.6)] entry-timestamp whitespace-nowrap">
+                {entry.time}
+              </p>
 
               {/* Delete Button */}
               {swipedEntryId === entry.id && (
@@ -929,7 +919,7 @@ console.log("ui.mic", { voiceOpen, voiceState, voiceReady, disabled: micDisabled
                 className="rounded-[33.333px] shrink-0 size-[8px]"
                 style={{ backgroundColor: getTagColor(tag) }}
               />
-              <p className="flex-[1_0_0] font-['DM_Sans',sans-serif] font-medium leading-[1.3] min-h-px min-w-px relative text-[11px] text-[rgba(0,0,0,0.6)] text-left">
+              <p className="flex-[1_0_0] font-['DM_Sans',sans-serif] font-medium leading-[1.3] min-h-px min-w-0 relative text-[11px] text-[rgba(0,0,0,0.6)] text-left">
                 {getTagName(tag)}
               </p>
             </button>
